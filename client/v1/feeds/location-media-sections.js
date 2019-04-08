@@ -27,22 +27,21 @@ LocationMediaFeedSections.prototype.get = function () {
         })
         .send()
         .then(function(data) {
-										
-            that.moreAvailable = data.more_available && !!data.next_max_id;
-            if (!that.moreAvailable && !_.isEmpty(data.ranked_items) && !that.getCursor())
-                throw new Exceptions.OnlyRankedItemsError;
-            if (that.moreAvailable)
-                that.setCursor(data.next_max_id);
+					that.moreAvailable = data.more_available && !!data.next_max_id;
+					if (!that.moreAvailable && !_.isEmpty(data.ranked_items) && !that.getCursor())
+						throw new Exceptions.OnlyRankedItemsError;
+					if (that.moreAvailable)
+						that.setCursor(data.next_max_id);
+						
+					var sections = []
 
-						var sections = []
-
-						_.map(data.sections, function (section) {
-							_.map(section.layout_content.medias, function (item) {
-								sections.push(new Media(that.session, item.media))
-							});
+					_.map(data.sections, function (section) {
+						_.map(section.layout_content.medias, function (item) {
+							sections.push(new Media(that.session, item.media))
 						});
+					});
 
-						return _.compact(sections);
+					return _.compact(sections);
         })
         // will throw an error with 500 which turn to parse error
         .catch(Exceptions.ParseError, function(){
