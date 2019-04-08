@@ -42,6 +42,7 @@ LocationMediaFeedSections.prototype.get = function () {
 					});
 
 					return _.compact(sections);
+					
         })
         // will throw an error with 500 which turn to parse error
         .catch(Exceptions.ParseError, function(){
