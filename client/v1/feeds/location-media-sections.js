@@ -27,16 +27,22 @@ LocationMediaFeedSections.prototype.get = function () {
         })
         .send()
         .then(function(data) {
-					console.log(data)
 										
             that.moreAvailable = data.more_available && !!data.next_max_id;
             if (!that.moreAvailable && !_.isEmpty(data.ranked_items) && !that.getCursor())
                 throw new Exceptions.OnlyRankedItemsError;
             if (that.moreAvailable)
                 that.setCursor(data.next_max_id);
-            return _.map(data.sections, function (medium) {
-                return new Media(that.session, medium.medias[0].media);
-            });
+
+						var sections = []
+
+						_.map(data.sections, function (section) {
+							_.map(section.layout_content.medias, function (item) {
+								sections.push(new Media(that.session, item.media))
+							});
+						});
+
+						return _.compact(sections);
         })
         // will throw an error with 500 which turn to parse error
         .catch(Exceptions.ParseError, function(){
