@@ -22,7 +22,7 @@ LocationMediaFeedSections.prototype.get = function () {
         .setResource('locationFeedSections', {
             id: that.locationId
         }).setData({
-					max_id: that.cursor,
+					max_id: that.cursor || "",
 					rank_token: Helpers.generateUUID(),
 					tab: 'ranked'
         })
